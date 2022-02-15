@@ -1,0 +1,273 @@
+<!-- 
+/**
+ **** AppzStory Happy Valentine's Day Darling ****
+ * 
+ * @link https://appzstory.dev
+ * @author Yothin Sapsamran (Jame AppzStory Studio)
+ * 
+ */
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Happy Valentine's Day Darling AppzStory</title>
+    <link rel="shortcut icon" type="image/x-icon" href="icon.ico">
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="node_modules/justifiedGallery/dist/css/justifiedGallery.min.css">
+    <link rel="stylesheet" href="node_modules/lightgallery.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
+    <style>
+        body{
+            overflow: hidden;
+            margin: 0;
+        }
+        .text{
+            position: fixed;
+            top: 30%;
+            width: 100%;
+            text-align: center;
+            font-family: 'Love Ya Like A Sister', cursive;
+            background:rgba(255, 255, 255, 0.6);
+            padding: 20px 0;
+        }
+        .text h1,
+        .text h2{
+            color: #c70012;
+            font-weight: 900;
+            text-shadow: 3px 3px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+        }
+
+        .input{
+            position: fixed;
+            top: 50%;
+            width: 100%;
+        }
+        
+        .lg-backdrop {
+            background-color: #000000c4;
+        }
+
+        .text h1{
+            font-size: 50px;
+        }
+        .text h2{
+            font-size: 30px;
+        }
+        @media (max-width: 1300px) {
+            .text h1{
+                font-size: 40px;
+            }
+            .text h2{
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .text h1{
+                font-size: 30px;
+            }
+            .text h2{
+                font-size: 20px;
+            }
+        }
+    
+    </style>
+</head>
+<body>
+    <section id="img-section" style="display: none;">
+        <div id="aniimated-thumbnials"  style=" opacity: 0.9;"></div>
+    </section>
+    <canvas></canvas>
+    <div class="text">
+        <form id="frm">
+            <h1 id="subject" class="px-2"></h1>
+            <h2 id="title" class="px-2" style="display: none;"></h2>
+            <div class="input-group input-group-lg w-50 mx-auto mt-5">
+                <input type="text" id="password" class="form-control" placeholder="รหัสแทนใจ">
+                <!-- <span class="input-group-text btn btn-primary" id="btn">กล่องของขวัญ</span> -->
+                <input type="submit" class="btn btn-primary" value="กล่องของขวัญ"></span>
+            </div>
+        </form>
+    </div>
+    
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="node_modules/justifiedGallery/dist/js/jquery.justifiedGallery.min.js"></script>
+    <script src="node_modules/lightgallery.js"></script>
+    <script src="node_modules/lg-thumbnail.min.js"></script>
+    <script src="node_modules/lg-autoplay.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+
+    <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js";
+
+            /** ติดตั้ง Firebase configuration **/
+            
+            
+
+
+
+
+
+
+
+            /**********************************/
+
+
+            const firebase = initializeApp(firebaseConfig);
+            import { getDatabase, ref, child, onValue, get } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-database.js";
+
+            const dbRef = ref(getDatabase());
+            get(child(dbRef, `/`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    let snaps = snapshot.val()
+                    $('#subject').text(snaps.subject)
+                    $('#title').text(snaps.title)
+
+                    for(let i = 1; i <= 120; i++){
+                        let num = Math.floor(Math.random() * snaps.count) + 1
+                        $("#aniimated-thumbnials").append(`
+                            <a href="img/img (${num}).jpg">
+                                <img src="img/img (${num}).jpg" alt="">
+                            </a>
+                        `)
+                    }
+
+                    $("#aniimated-thumbnials").justifiedGallery();
+                    lightGallery(document.getElementById('aniimated-thumbnials'),{
+                        thumbnail:true
+                    });  
+
+                    $("#frm").submit(function (e){
+                        e.preventDefault()
+
+                        if( $('#password').val()  == snaps.password ){
+                            swal({
+                                title: "ยินดีต้อนรับสู่ ความทรงจำของเรา",
+                                text: "ของขวัญจากเค้านะ >//<",
+                                button: "Aww yiss!",
+                            });
+                            $('.input-group').hide();
+                            $('h2').show();
+                            $('#img-section').show();
+                        }else{
+                            $('#password').val('')
+                            swal({
+                                title: "ยังไม่ถูกนะ",
+                                text: "ลองใหม่อีกครั้งสิ ที่รัก :P",
+                                button: "Aww yiss!",
+                            });
+                        }
+                    })
+
+                } else {
+                    console.log("No data available");
+                }
+            }).catch((error) => {
+                console.error(error);
+            });
+    </script>
+
+    <script>
+    //  canvas
+    var canvas = document.querySelector("canvas"),
+        ctx = canvas.getContext("2d");
+
+        var ww,wh;
+
+        function onResize(){
+        ww = canvas.width = window.innerWidth;
+        wh = canvas.height = window.innerHeight;
+        }
+
+        ctx.strokeStyle = "red";
+        ctx.shadowBlur = 25;
+        ctx.shadowColor = "hsla(0, 100%, 60%,0.5)";
+
+        var precision = 100;
+        var hearts = [];
+        var mouseMoved = false;
+        function onMove(e){
+        mouseMoved = true;
+        if(e.type === "touchmove"){
+            hearts.push(new Heart(e.touches[0].clientX, e.touches[0].clientY));
+            hearts.push(new Heart(e.touches[0].clientX, e.touches[0].clientY));
+        }
+        else{
+            hearts.push(new Heart(e.clientX, e.clientY));
+            hearts.push(new Heart(e.clientX, e.clientY));
+        }
+        }
+
+        var Heart = function(x,y){
+        this.x = x || Math.random()*ww;
+        this.y = y || Math.random()*wh;
+        this.size = Math.random()*2 + 1;
+        this.shadowBlur = Math.random() * 10;
+        this.speedX = (Math.random()+0.2-0.6) * 8;
+        this.speedY = (Math.random()+0.2-0.6) * 8;
+        this.speedSize = Math.random()*0.05 + 0.01;
+        this.opacity = 1;
+        this.vertices = [];
+        for (var i = 0; i < precision; i++) {
+            var step = (i / precision - 0.5) * (Math.PI * 2);
+            var vector = {
+            x : (15 * Math.pow(Math.sin(step), 3)),
+            y : -(13 * Math.cos(step) - 5 * Math.cos(2 * step) - 2 * Math.cos(3 * step) - Math.cos(4 * step)) 
+            }
+            this.vertices.push(vector);
+        }
+        }
+
+        Heart.prototype.draw = function(){
+        this.size -= this.speedSize;
+        this.x += this.speedX;
+        this.y += this.speedY;
+        ctx.save();
+        ctx.translate(-1000,this.y);
+        ctx.scale(this.size, this.size);
+        ctx.beginPath();
+        for (var i = 0; i < precision; i++) {
+            var vector = this.vertices[i];
+            ctx.lineTo(vector.x, vector.y);
+        }
+        ctx.globalAlpha = this.size;
+        ctx.shadowBlur = Math.round((3 - this.size) * 10);
+        ctx.shadowColor = "hsla(0, 100%, 60%,0.5)";
+        ctx.shadowOffsetX = this.x + 1000;
+        ctx.globalCompositeOperation = "screen"
+        ctx.closePath();
+        ctx.fill()
+        ctx.restore();
+        };
+
+
+        function render(a){
+        requestAnimationFrame(render);
+        
+        hearts.push(new Heart())
+        ctx.clearRect(0,0,ww,wh);
+        for (var i = 0; i < hearts.length; i++) {
+            hearts[i].draw();
+            if(hearts[i].size <= 0){
+            hearts.splice(i,1);
+            i--;
+            }
+        }
+        }
+
+
+
+        onResize();
+        window.addEventListener("mousemove", onMove);
+        window.addEventListener("touchmove", onMove);
+        window.addEventListener("resize", onResize);
+        requestAnimationFrame(render);
+
+    </script>
+
+</body>
+</html>
